@@ -1,0 +1,111 @@
+# configs/rules.yml
+# Deterministic labeling rules (V1). Keep it compact, human-tunable, and English-only.
+
+connected:
+  duration_cutoff_s: 30          # main threshold for "Connected"
+  min_tokens: 40                 # transcript must have at least this many tokens
+  short_disconnected_s: 10       # anything shorter is forced Disconnected
+  # If diarization is ever enabled (V2), we may use this as an alternative signal:
+  diarization_alt:
+    require_two_speakers: true
+    min_duration_s: 30
+  disconnection_cues:
+    - "voicemail"
+    - "leave a message"
+    - "the number you have dialed"
+    - "hello?"                   # repeated hello with no response (heuristic)
+
+types:
+  Inquiry:
+    - "information"
+    - "status"
+    - "want to know"
+    - "question about"
+    - "how to"
+    - "where can I"
+    - "clarify"
+    - "explain"
+    - "details"
+  Billing/Sales:
+    - "bill"
+    - "invoice"
+    - "charge"
+    - "overcharge"
+    - "payment"
+    - "price"
+    - "quote"
+    - "order"
+    - "plan"
+    - "upgrade"
+    - "subscription"
+    - "discount"
+    - "receipt"
+  Support:
+    - "not working"
+    - "issue"
+    - "error"
+    - "bug"
+    - "fail"
+    - "failed"
+    - "cannot"
+    - "can't"
+    - "troubleshoot"
+    - "reset"
+    - "configure"
+    - "down"
+    - "broken"
+    - "outage"
+    - "fix"
+  Complaint:
+    - "complaint"
+    - "poor service"
+    - "unhappy"
+    - "frustrated"
+    - "speak to a manager"
+    - "escalate"
+    - "escalation"
+    - "cancel service"
+    - "unacceptable"
+    - "bad experience"
+
+# If multiple buckets tie, apply this precedence (left = highest).
+type_tie_break: ["Complaint", "Support", "Billing/Sales", "Inquiry"]
+
+outcomes:
+  # Outcome is inferred from the final fraction of the transcript (see window below).
+  Resolved:
+    - "glad we could fix"
+    - "should work now"
+    - "close the ticket"
+    - "close the case"
+    - "issue is resolved"
+    - "we've sorted it"
+    - "anything else I can help"
+  Callback:
+    - "we will call you back"
+    - "schedule a callback"
+    - "reach out tomorrow"
+    - "ring you back"
+    - "follow up"
+  Refund:
+    - "issued a refund"
+    - "processed the refund"
+    - "reversal posted"
+    - "refund will reflect"
+    - "credited your account"
+  Sale-close:
+    - "order placed"
+    - "subscription activated"
+    - "payment processed"
+    - "welcome aboard"
+    - "upgraded your plan"
+    - "purchase confirmed"
+  # Phrases that negate Refund even if a refund phrase appears nearby.
+  negations:
+    - "refund denied"
+    - "no refund"
+    - "not eligible for refund"
+    - "refund not approved"
+
+# Only look at the tail of the transcript when deciding the outcome.
+outcome_window_frac: 0.25        # last 25% of tokens

@@ -1,0 +1,32 @@
+# .streamlit/config.toml — Streamlit configuration for Call Insights
+
+[server]
+headless = true
+address = "127.0.0.1"
+port = 8501
+
+# Security: keep CSRF, disable CORS (safe on localhost).
+enableXsrfProtection = true
+enableCORS = true
+
+# hot-reload on file save; auto file watcher.
+runOnSave = true
+fileWatcherType = "auto"   # use "poll" if editing on network drives
+
+# Allow larger uploads for audio files. Value in MB.
+maxUploadSize = 500
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#14B8A6"          # teal
+backgroundColor = "#0B1220"
+secondaryBackgroundColor = "#111827"
+textColor = "#E5E7EB"
+font = "sans serif"
+
+[logger]
+# Default logging level; raise to "debug" temporarily if needed.
+level = "info"

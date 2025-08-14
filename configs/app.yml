@@ -1,0 +1,52 @@
+# configs/app.yml
+# App-wide settings that don't require code changes.
+# Keep values simple and local-first; everything writes under ./artifacts.
+
+timezone: Europe/Berlin
+pii_mask: true                 # mask names in Q&A previews by default
+duration_cutoff_s: 30          # "Connected" rule threshold (can tune here)
+show_unknowns_default: false   # hide Unknowns in charts unless toggled in UI
+max_preview_rows: 50           # Q&A result table cap
+
+paths:
+  artifacts_dir: ./artifacts
+  charts_dir: ./artifacts/charts
+  exports_dir: ./artifacts/exports
+  audio_wav_dir: ./artifacts/audio_wav
+  qna_log_dir: ./artifacts/logs/qna
+
+ingestion:
+  accepted_audio_ext: [wav, mp3, m4a, flac]
+  max_files_per_batch: 50            # guardrails for demos
+  max_audio_minutes_per_file: 45     # smoother UX on CPU-only
+
+stt:
+  engine: faster-whisper             # offline STT
+  model: small.en                    # English-only; upgrade to base.en if you have GPU
+  compute_type: int8                 # int8|int8_float16|float16|float32
+  num_workers: 1
+  vad: false                         # VAD not used in V1
+  diarization: false                 # diarization off by default (can be enabled in V2)
+
+vectorstore:
+  backend: chroma
+  persist_dir: ./vectorstore/chroma
+  embedding:
+    model: all-MiniLM-L6-v2          # optional if/when you add semantic indexing
+    device: auto
+
+ui:
+  colors:                            # keep in sync with Appendix A
+    Connected: "#16A34A"
+    Disconnected: "#9CA3AF"
+    Inquiry: "#3B82F6"
+    Billing/Sales: "#14B8A6"
+    Support: "#F59E0B"
+    Complaint: "#EF4444"
+    Resolved: "#16A34A"
+    Callback: "#8B5CF6"
+    Refund: "#F59E0B"
+    Sale-close: "#14B8A6"
+
+logging:
+  level: info

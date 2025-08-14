@@ -1,0 +1,67 @@
+timezone: "Europe/Berlin"
+
+#Model config
+model:
+  runner: ollama
+  name: "llama3:instruct"        # or any model you’ve pulled with Ollama
+  params:
+    temperature: 0.2
+    num_predict: 256
+  timeouts:
+    request_s: 20
+
+result_rows_cap: 200    # or any number you prefer
+semantic_top_k: 200     # to view more when semantic is enabled
+
+filter_schema:
+  allowed_keys:
+    - date_from
+    - date_to
+    - type_any
+    - outcome_any
+    - agents
+    - campaigns
+    - products
+    - min_amount
+    - max_amount
+
+# Keep entity matching strict so we don't leak other campaigns.
+entity_match:
+  fuzzy: false
+  score_threshold: 0.90
+
+# Lightweight phrases to reduce typing. These *augment* detection.
+synonyms:
+  # Types (add plural/phrase variants)
+  "sales":            { type_any: ["Billing/Sales"] }
+  "sales-related":    { type_any: ["Billing/Sales"] }
+  "billing":          { type_any: ["Billing/Sales"] }
+  "sales calls":      { type_any: ["Billing/Sales"] }
+
+  "support":          { type_any: ["Support"] }
+  "support calls":    { type_any: ["Support"] }
+  "technical support": { type_any: ["Support"] }
+
+  "inquiry":          { type_any: ["Inquiry"] }
+  "inquiries":        { type_any: ["Inquiry"] }
+
+  "complaint":        { type_any: ["Complaint"] }
+  "complaints":       { type_any: ["Complaint"] }
+
+  # Outcomes (extra variants that users often write)
+  "unknown":          { outcome_any: ["Unknown"] }
+  "unknown outcome":  { outcome_any: ["Unknown"] }
+
+  "resolved":         { outcome_any: ["Resolved"] }
+  "callback":         { outcome_any: ["Callback"] }
+  "refund":           { outcome_any: ["Refund"] }
+  "sale-close":       { outcome_any: ["Sale-close"] }
+
+   # Disconnected / dropped line variants → include every label your data uses
+  "disconnected":   { outcome_any: ["Disconnected", "Dropped", "Hangup"] }
+  "disconnect":     { outcome_any: ["Disconnected", "Dropped", "Hangup"] }
+  "dropped":        { outcome_any: ["Disconnected", "Dropped", "Hangup"] }
+  "dropped call":   { outcome_any: ["Disconnected", "Dropped", "Hangup"] }
+  "hang up":        { outcome_any: ["Disconnected", "Dropped", "Hangup"] }
+  "hangup":         { outcome_any: ["Disconnected", "Dropped", "Hangup"] }
+  "hung up":        { outcome_any: ["Disconnected", "Dropped", "Hangup"] }

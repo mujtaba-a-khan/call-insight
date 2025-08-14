@@ -1,0 +1,11 @@
+# Vectorstore configuration for Call Insights
+
+vectorstore:
+  enabled: true
+  provider: chroma
+  persist_dir: ".chroma"
+  collection: "call_insights"
+  distance: "cosine"            # cosine | l2 | ip
+  embedder: "ollama"            # ollama | sbert
+  embedder_model: "nomic-embed-text"  # ollama model name
+  sbert_model: "sentence-transformers/all-MiniLM-L6-v2"  # sbert model name

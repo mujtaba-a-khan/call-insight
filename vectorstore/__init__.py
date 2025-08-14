@@ -1,0 +1,1 @@
+"""Vectorstore package (Chroma backend and local embedders)."""
